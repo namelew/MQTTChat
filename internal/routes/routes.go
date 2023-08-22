@@ -1,18 +1,23 @@
 package routes
 
-import "github.com/labstack/echo/v4"
+import (
+	"os"
+
+	"github.com/labstack/echo/v4"
+	"github.com/namelew/mqttchat/internal/controllers"
+)
 
 func chatHandler(handler *echo.Echo) {
-	handler.GET("/receive/:from/", nil)
-	handler.POST("/send/:to/", nil)
+	handler.GET("/receive/:from/", controllers.ReceiveMessage)
+	handler.POST("/send/:to/", controllers.SendMessage)
 }
 
 func contactsHandler(handler *echo.Echo) {
-	handler.GET("/contacts/", nil)
-	handler.GET("/contacts/:uid/", nil)
-	handler.POST("/contacts/", nil)
-	handler.PUT("/contacts/:uid/", nil)
-	handler.DELETE("/contacts/:uid/", nil)
+	handler.GET("/users/", nil)
+	handler.GET("/users/:uid/", nil)
+	handler.POST("/users/", controllers.AddUser)
+	handler.PUT("/users/:uid/", controllers.UpdateUser)
+	handler.DELETE("/users/:uid/", controllers.RemoveUser)
 }
 
 func Route() {
@@ -21,5 +26,5 @@ func Route() {
 	chatHandler(handler)
 	contactsHandler(handler)
 
-	handler.Logger.Fatal(handler.Start(":8000"))
+	handler.Logger.Fatal(handler.Start(":" + os.Getenv("APIPORT")))
 }
