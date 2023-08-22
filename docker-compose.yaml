@@ -11,9 +11,9 @@ services:
   database:
     image: postgres:15
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=root
+      - POSTGRES_USER=mqttchatuser
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mqttchat
     ports:
       - 5432:5432
     volumes:
@@ -22,10 +22,10 @@ services:
       - backend
 networks:
   chat:
-    driver: brigde
+    driver: bridge
   frontend:
-    driver: brigde
+    driver: bridge
   backend:
-    driver: brigde
+    driver: bridge
 volumes:
   database-data:

@@ -51,7 +51,7 @@ func RemoveUser(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	return (database.DB.Delete(&user, c.Param("uid"))).Error
+	return (database.DB.Delete(&user, models.User{ID: c.Param("uid")})).Error
 }
 
 func UpdateUser(c echo.Context) error {
@@ -69,7 +69,7 @@ func UpdateUser(c echo.Context) error {
 
 	dbuser := models.User{}
 
-	if err := (database.DB.Find(&dbuser, c.Param("uid"))).Error; err != nil {
+	if err := (database.DB.Find(&dbuser, models.User{ID: c.Param("uid")})).Error; err != nil {
 		return echo.ErrInternalServerError
 	}
 
