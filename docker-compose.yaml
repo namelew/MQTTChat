@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  broker:
+    image: eclipse-mosquitto:latest
+    ports:
+      - 1883:1883
+    volumes:
+     - ./mosquitto.config:/mosquitto/config/mosquitto.conf
+    networks:
+     - chat
+  database:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+    ports:
+      - 5432:5432
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    networks:
+      - backend
+networks:
+  chat:
+    driver: brigde
+  frontend:
+    driver: brigde
+  backend:
+    driver: brigde
+volumes:
+  database-data:
