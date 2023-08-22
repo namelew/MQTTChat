@@ -33,7 +33,6 @@ func Connect() {
 
 	err = DB.AutoMigrate(
 		&models.User{},
-		&models.Chat{},
 		&models.Message{},
 	)
 
