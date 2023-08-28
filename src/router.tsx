@@ -14,7 +14,7 @@ const AppRouter = () => {
             <Routes>
                 <Route path='/' element={<Default isAuth={isAuth}></Default>}>
                     <Route path='auth' element={<Auth setClientID={setClientID} setIsAuth={setIsAuth}/>}/>
-                    <Route path='chat' element={<Chat />}/>
+                    <Route path='chat' element={<Chat clientID={clientID}/>}/>
                 </Route>
                 <Route path='*' element={<NotFound />}/>
             </Routes>
