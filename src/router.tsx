@@ -7,12 +7,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 const AppRouter = () => {
     const [clientID, setClientID] = useState('');
+    const [isAuth, setIsAuth] = useState(false);
 
     return (
         <Router>
             <Routes>
-                <Route path='/' element={<Default></Default>}>
-                    <Route path='auth' element={<Auth setClientID={setClientID}/>}/>
+                <Route path='/' element={<Default isAuth={isAuth}></Default>}>
+                    <Route path='auth' element={<Auth setClientID={setClientID} setIsAuth={setIsAuth}/>}/>
                     <Route path='chat' element={<Chat />}/>
                 </Route>
                 <Route path='*' element={<NotFound />}/>

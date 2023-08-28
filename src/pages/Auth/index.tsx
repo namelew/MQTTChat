@@ -7,14 +7,15 @@ import React from 'react';
 
 interface Props {
     setClientID: React.Dispatch<React.SetStateAction<string>>;
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Auth = ( { setClientID } : Props) => {
+const Auth = ( { setClientID, setIsAuth } : Props) => {
     const navigate = useNavigate();
 
     return (
         <Container>
-            <form className={styles.newSession} onSubmit={() => { navigate('/chat') }}>
+            <form className={styles.newSession} onSubmit={() => { setIsAuth(true); navigate('/chat') }}>
                 <h2>Informa as informações necessárias para autenticação</h2>
                 <TextField
                     required
