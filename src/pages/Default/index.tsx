@@ -1,10 +1,13 @@
 import styles from './Default.module.scss';
+import { Outlet } from 'react-router-dom';
 
 const Default = () => {
     return (
-        <div>
-            
-        </div>
+        <>
+            <div>
+                <Outlet />
+            </div>
+        </>
     )
 };
 
