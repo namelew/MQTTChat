@@ -8,6 +8,8 @@ interface Props {
 
 const Chat = ( { clientID }: Props ) => {
     const [client, setClient] = useState<Client>();
+    const [messages, setMessages] = useState<any[]>();
+    const [conversations, setConversations] = useState<any[]>();
 
 
     useEffect(() => {
@@ -21,7 +23,21 @@ const Chat = ( { clientID }: Props ) => {
 
     return (
         <div>
-            Chat
+            <aside className={styles.control}>
+                <header className={styles.moderation}>
+                    Cabeçalho de controle
+                </header>
+                <div className={styles.conversations}>
+                    {conversations?.map( (item, index) => (
+                        <span key={index}>{item}</span>
+                    ))}
+                </div>
+            </aside>
+            <div className={styles.chat}>
+                {messages?.map( (item, index) => (
+                    <span key={index}>{item}</span>
+                ))}
+            </div>
         </div>
     )
 };
