@@ -1,33 +1,68 @@
-import Button from '@mui/material/Button';
-import styles from './Auth.module.scss';
-import TextField from '@mui/material/TextField';
-import { Container } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, TextField, Container, Box, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
 
 interface Props {
-    setClientID: React.Dispatch<React.SetStateAction<string>>;
-    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Auth = ( { setClientID, setIsAuth } : Props) => {
+const Auth = ({} : Props) => {
+    const [ClientID, setClientID] = useState('');
     const navigate = useNavigate();
 
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+
+        console.log(`Client ID: ${ClientID}`);
+        navigate(`/chat/${ClientID}`);
+    };
+
     return (
-        <Container>
-            <form className={styles.newSession} onSubmit={() => { setIsAuth(true); navigate('/chat') }}>
-                <h2>Informa as informações necessárias para autenticação</h2>
+        <Container
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+            }}
+        >
+        <Paper
+            sx={{
+            p: 2,
+            height:'60%',
+            width:'50%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            }}
+        >
+            <Typography component='h2' variant='h4'>Login</Typography>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    paddingTop: '20%',
+                    width: '80%',
+                    gap: 2,
+                }}
+                component="form"
+                onSubmit={handleSubmit}
+            >
                 <TextField
-                    required
-                    id="clientID"
-                    label="Insira o ID do Usuário"
+                    label="Client ID"
                     variant="outlined"
-                    onChange={event => setClientID(event.target.value)}
+                    value={ClientID}
+                    required
+                    fullWidth
+                    onChange={(e) => setClientID(e.target.value)}
                 />
-                <Button type='submit' variant="contained">Iniciar</Button>
-            </form>
+                <Button variant="contained" type="submit">
+                    Submit
+                </Button>
+            </Box>
+        </Paper>
         </Container>
-    )
+    );
 };
 
 export default Auth;

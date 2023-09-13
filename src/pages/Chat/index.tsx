@@ -3,24 +3,31 @@ import styles from './Chat.module.scss';
 import { Client } from 'paho-mqtt';
 import { IMessage } from 'interfaces/IMessage';
 import { IConversation, IConversationType } from 'interfaces/IConversation';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface Props {
-    clientID: string
 }
 
-const Chat = ( { clientID }: Props ) => {
+const Chat = ( { }: Props ) => {
     const [client, setClient] = useState<Client>();
     const [messages, setMessages] = useState<IMessage[]>();
+    const parameters = useParams();
+    const navigate = useNavigate();
     const [conversations, setConversations] = useState<IConversation[]>();
 
 
     useEffect(() => {
-        setClient(new Client('localhost', 1883, clientID));
+        if (parameters.id) {
+            setClient(new Client('localhost', 1883, parameters.id));
+        } else {
+            alert('Informe o seu usuário para acessar o chat');
+            navigate('/auth');
+        }
 
         if (client) {
             console.log('cliente criado com sucesso');
         }
-    }, [clientID]);
+    }, [parameters]);
 
 
     return (
