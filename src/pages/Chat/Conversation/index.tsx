@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, List, ListItem, ListItemText, Paper } from '@mui/material';
+import { Box, TextField, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 
 interface Message {
   id: number;
@@ -26,6 +26,14 @@ const Conversation: React.FC = () => {
         height: '100vh',
       }}
     >
+      <Box
+        sx={{
+          p: 2,
+          borderBottom: '1px solid gray',
+        }}
+      >
+        <Typography variant="h6">Chat Name</Typography>
+      </Box>
       <List
         sx={{
           flexGrow: 1,
