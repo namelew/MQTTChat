@@ -10,6 +10,6 @@ export interface IConversation {
     id: string,
     name: string,
     type: IConversationType,
-    participants: IUser[],
-    messages: IMessage[],
+    participants?: IUser[],
+    messages?: IMessage[],
 };

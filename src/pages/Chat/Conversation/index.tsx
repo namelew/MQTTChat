@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import { IMessage, IMessageType } from 'interfaces/IMessage';
+import { IConversationType } from 'interfaces/IConversation';
 
 interface Message {
   id: number;
@@ -14,12 +16,28 @@ interface Props {
 }
 
 const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
   const handleSend = () => {
-    const time = new Date().toLocaleTimeString();
-    setMessages([...messages, { id: Date.now(), name: clientID, text: newMessage, time }]);
+    const time = new Date();
+    setMessages([...messages, { 
+      id: Date.now(), 
+      type: IMessageType.Conversation,
+      sender: 
+        {
+          id: clientID,
+          name: clientID
+        },
+          chat: { 
+            id: clientID+'-'+ (current ? current : '') + '-' + time.toString(),
+            name: current ? current : '',
+            type: IConversationType.OneToOne,
+            messages: messages,
+          }, 
+          payload: newMessage, 
+          timestamp: time, 
+      }]);
     setNewMessage('');
   };
 
@@ -55,7 +73,7 @@ const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
                 color: 'white',
               }}
             >
-              <ListItemText primary={message.text} secondary={`${message.name}, ${message.time}`} />
+              <ListItemText primary={message.payload} secondary={`${message.sender.name}, ${message.timestamp.toLocaleDateString()}`} />
             </Paper>
           </ListItem>
         ))}
