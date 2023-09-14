@@ -7,7 +7,11 @@ interface Conversation {
   lastMessage: string;
 }
 
-const ConversationsList: React.FC = () => {
+interface Props {
+  selectConversation: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -38,7 +42,7 @@ const ConversationsList: React.FC = () => {
       >
         {filteredConversations.map((conversation) => (
           <ListItem button key={conversation.id}>
-            <ListItemText primary={conversation.name} secondary={conversation.lastMessage} />
+            <ListItemText primary={conversation.name} secondary={conversation.lastMessage} onClick={() => selectConversation(conversation.name)}/>
           </ListItem>
         ))}
       </List>

@@ -8,13 +8,18 @@ interface Message {
   time: string;
 }
 
-const Conversation: React.FC = () => {
+interface Props {
+  clientID: string
+  current?: string
+}
+
+const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
   const handleSend = () => {
     const time = new Date().toLocaleTimeString();
-    setMessages([...messages, { id: Date.now(), name: 'User', text: newMessage, time }]);
+    setMessages([...messages, { id: Date.now(), name: clientID, text: newMessage, time }]);
     setNewMessage('');
   };
 
@@ -32,7 +37,7 @@ const Conversation: React.FC = () => {
           borderBottom: '1px solid gray',
         }}
       >
-        <Typography variant="h6">Chat Name</Typography>
+        <Typography variant="h6">{current ? current : 'Vazio'}</Typography>
       </Box>
       <List
         sx={{
@@ -74,7 +79,7 @@ const Conversation: React.FC = () => {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <Button type="submit" variant="contained" color="primary" disabled={!newMessage}>
+        <Button type="submit" variant="contained" color="primary" disabled={!newMessage || !current}>
           Send
         </Button>
       </Box>
