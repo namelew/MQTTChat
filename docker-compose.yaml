@@ -20,6 +20,29 @@ services:
       - database-data:/var/lib/postgresql/data
     networks:
       - backend
+  blobstorage:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mqttchatuser
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=mqttchat
+    networks:
+      - backend
+    ports:
+      - 27017:27017
+    volumes:
+      - blobstorage-data:/data/db
+  dbcache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - backend
+    volumes:
+      - dbcache-data:/data
+    environment:
+      - REDIS_PASSWORD=password
 networks:
   chat:
     driver: bridge
@@ -29,3 +52,5 @@ networks:
     driver: bridge
 volumes:
   database-data:
+  blobstorage-data:
+  dbcache-data:
