@@ -1,4 +1,4 @@
-module github.com/namelew/MQTTChat.git
+module github.com/namelew/MQTTChat
 
 go 1.21.0
 

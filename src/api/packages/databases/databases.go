@@ -22,7 +22,7 @@ var (
 
 func Connect() {
 	connectionString := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
+		"host=%s user=%s password=%s dbname=%s port=%s",
 		os.Getenv("DBADRESS"),
 		os.Getenv("DBUSER"),
 		os.Getenv("DBPASSWORD"),
@@ -36,7 +36,15 @@ func Connect() {
 		log.Fatalln("Unable to connect with database. ", err.Error())
 	}
 
-	blobOptions := options.Client().ApplyURI(os.Getenv("BLOBCONN"))
+	connectionString = fmt.Sprintf(
+		"mongodb://%s:%s@%s/%s",
+		os.Getenv("DBUSER"),
+		os.Getenv("DBPASSWORD"),
+		os.Getenv("BLOBSREPLS"),
+		os.Getenv("DBNAME"),
+	)
+
+	blobOptions := options.Client().ApplyURI(connectionString)
 
 	BLOBStorage, err = mongo.Connect(context.TODO(), blobOptions)
 
@@ -44,7 +52,13 @@ func Connect() {
 		log.Fatalln("Unable to connect with blob storage. ", err.Error())
 	}
 
-	cacheOptions, err := redis.ParseURL(os.Getenv("CACHECONN"))
+	connectionString = fmt.Sprintf(
+		"redis://%s@%s/0",
+		os.Getenv("DBPASSWORD"),
+		os.Getenv("CACHEADRESS"),
+	)
+
+	cacheOptions, err := redis.ParseURL(connectionString)
 
 	if err != nil {
 		log.Fatalln("Unable to parser db cache connection string. ", err.Error())
