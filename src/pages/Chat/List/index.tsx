@@ -15,12 +15,17 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
     conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleOpenModal = () => {
+  const OpenModal = () => {
     setOpenModal(true);
   };
 
-  const handleCloseModal = () => {
+  const CloseModal = () => {
     setOpenModal(false);
+  };
+
+  const CreateConversation = () => {
+    console.log("Criando nova conversa")
+    CloseModal();
   };
 
   return (
@@ -38,15 +43,15 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Button onClick={handleOpenModal}>Nova conversa</Button>
-      <Dialog open={openModal} onClose={handleCloseModal}>
+      <Button onClick={OpenModal}>Nova conversa</Button>
+      <Dialog open={openModal} onClose={CloseModal}>
         <DialogTitle>Informe as informações do canal</DialogTitle>
         <DialogContent>
           {/* Add your form for creating a new conversation here */}
         </DialogContent>
         <DialogActions>
-          <Button color='error' onClick={handleCloseModal}>Cancel</Button>
-          <Button onClick={handleCloseModal}>Create</Button>
+          <Button color='error' onClick={CloseModal}>Cancel</Button>
+          <Button onClick={CreateConversation}>Create</Button>
         </DialogActions>
       </Dialog>
       <List
