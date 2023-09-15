@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import { Box, TextField, List, ListItem, ListItemText } from '@mui/material';
-
-interface Conversation {
-  id: number;
-  name: string;
-  lastMessage: string;
-}
+import { IConversation } from 'interfaces/IConversation';
 
 interface Props {
-  selectConversation: React.Dispatch<React.SetStateAction<string | undefined>>
+  selectConversation: React.Dispatch<React.SetStateAction<IConversation | undefined>>
 }
 
 const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useState<IConversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredConversations = conversations.filter((conversation) =>
@@ -42,7 +37,7 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
       >
         {filteredConversations.map((conversation) => (
           <ListItem button key={conversation.id}>
-            <ListItemText primary={conversation.name} secondary={conversation.lastMessage} onClick={() => selectConversation(conversation.name)}/>
+            <ListItemText primary={conversation.name} secondary={conversation.messages?.at(-1)?.payload} onClick={() => selectConversation(conversation)}/>
           </ListItem>
         ))}
       </List>

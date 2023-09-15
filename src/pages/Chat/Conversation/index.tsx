@@ -1,44 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import { IMessage, IMessageType } from 'interfaces/IMessage';
-import { IConversationType } from 'interfaces/IConversation';
-
-interface Message {
-  id: number;
-  name: string;
-  text: string;
-  time: string;
-}
+import { IConversation} from 'interfaces/IConversation';
 
 interface Props {
   clientID: string
-  current?: string
+  current?: IConversation
 }
 
 const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
+  useEffect(() => {
+    if (current && current.messages) {
+      setMessages(current.messages);
+    }
+  },[current]);
+
   const handleSend = () => {
     const time = new Date();
-    setMessages([...messages, { 
-      id: Date.now(), 
-      type: IMessageType.Conversation,
-      sender: 
-        {
-          id: clientID,
-          name: clientID
-        },
-          chat: { 
-            id: clientID+'-'+ (current ? current : '') + '-' + time.toString(),
-            name: current ? current : '',
-            type: IConversationType.OneToOne,
-            messages: messages,
-          }, 
-          payload: newMessage, 
-          timestamp: time, 
-      }]);
-    setNewMessage('');
+    if (current) {
+      setMessages([...messages, { 
+          id: Date.now(), 
+          type: IMessageType.Conversation,
+          sender: 
+            {
+              id: clientID,
+              name: clientID
+            },
+              chat: current,
+              payload: newMessage, 
+              timestamp: time, 
+          }]);
+        setNewMessage('');
+    }
   };
 
   return (
@@ -55,7 +51,7 @@ const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
           borderBottom: '1px solid gray',
         }}
       >
-        <Typography variant="h6">{current ? current : 'Vazio'}</Typography>
+        <Typography variant="h6">{current ? current.name : 'Vazio'}</Typography>
       </Box>
       <List
         sx={{

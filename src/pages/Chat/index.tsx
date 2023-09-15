@@ -3,11 +3,12 @@ import { Grid, Paper } from '@mui/material';
 import Conversation from './Conversation';
 import ConversationsList from './List';
 import { useNavigate, useParams } from 'react-router-dom';
+import { IConversation } from 'interfaces/IConversation';
 
 const Chat: React.FC = () => {
   const navigate = useNavigate();
   const [clientID, setClientID] = useState('');
-  const [currentConversation, setCurrentConversation] = useState<string>();
+  const [currentConversation, setCurrentConversation] = useState<IConversation>();
   const parameters = useParams();
 
   useEffect(() => {

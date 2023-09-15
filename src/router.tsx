@@ -6,6 +6,7 @@ const AppRouter = () => {
     return (
         <Router>
             <Routes>
+                <Route index element={<Auth />}/>
                 <Route path='auth' element={<Auth />}/>
                 <Route path='chat' element={<Chat />}/>
                 <Route path='chat/:id' element={<Chat />}/>
