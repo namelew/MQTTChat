@@ -9,11 +9,10 @@ import (
 )
 
 func HandleConnections() {
-	http.Handle("/conversation/open", http.HandlerFunc(controllers.ConversationOpen))
-	http.Handle("/conversation/list", http.HandlerFunc(controllers.ConversationList))
-	http.Handle("/conversation/close", http.HandlerFunc(controllers.ConversationClose))
-	http.Handle("/conversation/message/send", http.HandlerFunc(controllers.MessageSend))
-	http.Handle("/conversation/message/receive", http.HandlerFunc(controllers.MessageReceive))
+	http.Handle("/conversations", http.HandlerFunc(controllers.ConversationList))
+	http.Handle("/conversations/open", http.HandlerFunc(controllers.ConversationOpen))
+	http.Handle("/conversations/close", http.HandlerFunc(controllers.ConversationClose))
+	http.Handle("/conversations/messages", http.HandlerFunc(controllers.WebSocket))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("APIPORT"), nil))
 }
