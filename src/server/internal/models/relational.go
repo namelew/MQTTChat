@@ -10,13 +10,13 @@ const (
 )
 
 type User struct {
-	ID             string
-	Name           string
-	LastConnection time.Time
+	ID             string    `gorm:"primary_key"`
+	Name           string    `gorm:"index"`
+	LastConnection time.Time `gorm:"index"`
 }
 
 type Conversation struct {
-	ID        uint64
+	ID        uint64 `gorm:"primary_key"`
 	FromID    string
 	ToID      string
 	Type      ConversationType
@@ -26,18 +26,18 @@ type Conversation struct {
 }
 
 type Message struct {
-	ConversationID uint64
-	From           string
+	ID             uint64 `gorm:"primary_key"`
+	ConversationID uint64 `gorm:"index"`
+	From           string `gorm:"index"`
 	Text           string
 	Attachment     string
-	Time           time.Time
+	Time           time.Time `gorm:"index"`
 	Conversation
 }
 
 type UnreadMessage struct {
-	ConversationID uint64
-	From           string
-	To             string
-	Time           time.Time
+	MessageID uint64    `gorm:"primary_key"`
+	To        string    `gorm:"primary_key"`
+	Time      time.Time `gorm:"primary_key"`
 	Message
 }

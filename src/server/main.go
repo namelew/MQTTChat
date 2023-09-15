@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/namelew/MQTTChat/src/server/internal/services"
 	"github.com/namelew/MQTTChat/src/server/packages/databases"
 )
 
@@ -15,4 +16,5 @@ func main() {
 		}
 	}
 	databases.Connect()
+	services.Start()
 }
