@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormLabel, Input, Select, SelectChangeEvent, MenuItem } from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormLabel, Input, Select, SelectChangeEvent, MenuItem, Stack } from '@mui/material';
 import { IConversation, IConversationType } from 'interfaces/IConversation';
 
 interface Props {
@@ -60,23 +60,25 @@ const CreateModal = ({ open, setOpen } : Props) => {
                 <DialogTitle>Informe as informações do canal</DialogTitle>
                 <DialogContent>
                     <Box component='form'>
-                        <FormControl id="id">
-                            <FormLabel>Destino</FormLabel>
-                            <Input name="id" value={newConversation.id} onChange={handleIDChange} />
-                        </FormControl>
+                        <Stack spacing={2}>
+                            <FormControl id="id">
+                                <FormLabel>Destino</FormLabel>
+                                <Input name="id" value={newConversation.id} onChange={handleIDChange} />
+                            </FormControl>
 
-                        <FormControl id="name">
-                            <FormLabel>Nome</FormLabel>
-                            <Input name="name" value={newConversation.name} onChange={handleNameChange} />
-                        </FormControl>
+                            <FormControl id="name">
+                                <FormLabel>Nome</FormLabel>
+                                <Input name="name" value={newConversation.name} onChange={handleNameChange} />
+                            </FormControl>
 
-                        <FormControl id="type">
-                            <FormLabel>Tipo</FormLabel>
-                            <Select name="type" value={type} onChange={handleTypeChange}>
-                                <MenuItem value={IConversationType.Group.toString()}>Grupo</MenuItem>
-                                <MenuItem value={IConversationType.OneToOne.toString()}>Conversa</MenuItem>
-                            </Select>
-                        </FormControl>
+                            <FormControl id="type">
+                                <FormLabel>Tipo</FormLabel>
+                                <Select name="type" value={type} onChange={handleTypeChange}>
+                                    <MenuItem value={IConversationType.Group.toString()}>Grupo</MenuItem>
+                                    <MenuItem value={IConversationType.OneToOne.toString()}>Conversa</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Stack>
                     </Box>
                 </DialogContent>
                 <DialogActions>
