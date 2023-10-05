@@ -18,22 +18,23 @@ const (
 )
 
 type User struct {
-	Id   string
-	Name string
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type Conversation struct {
-	Id           string
-	Name         string
-	Type         ConversationType
-	Participants []User
-	Messages     []Message
+	Id           string           `json:"id"`
+	Name         string           `json:"name"`
+	Type         ConversationType `json:"type"`
+	Participants []User           `json:"participants"`
+	Messages     []Message        `json:"messages"`
 }
 
 type Message struct {
-	Id        uint64
-	Type      MessageType
-	Sender    User
-	Timestamp time.Time
-	Payload   string
+	Id        uint64       `json:"id"`
+	Type      MessageType  `json:"type"`
+	Sender    User         `json:"sender"`
+	Chat      Conversation `json:"chat"`
+	Timestamp time.Time    `json:"timestamp"`
+	Payload   string       `json:"payload"`
 }
