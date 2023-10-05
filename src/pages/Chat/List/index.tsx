@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Box, TextField, List, ListItem, ListItemText } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, TextField, List, ListItem, ListItemText, AppBar, Toolbar, IconButton, Stack } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { IConversation } from 'interfaces/IConversation';
 import CreateModal from './CreateModal';
 
@@ -8,6 +10,7 @@ interface Props {
 }
 
 const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) => {
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [openModal, setOpenModal] = useState(false);
@@ -15,6 +18,10 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
   const filteredConversations = conversations.filter((conversation) =>
     conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleClose = () => {
+    navigate('/auth');
+  };
 
   return (
     <Box
@@ -24,13 +31,22 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
         height: '100vh',
       }}
     >
-      <TextField
-        variant="outlined"
-        placeholder="Pesquisar"
-        fullWidth
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <Stack spacing={1}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <TextField
+          variant="outlined"
+          placeholder="Pesquisar"
+          fullWidth
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </Stack>
       <CreateModal open={openModal} setOpen={setOpenModal}/>
       <List
         sx={{
