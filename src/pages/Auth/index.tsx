@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField, Container, Box, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-interface Props {
-}
-
-const Auth = ({} : Props) => {
+const Auth = () => {
     const [ClientID, setClientID] = useState('');
     const navigate = useNavigate();
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, TextField, List, ListItem, ListItemText, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { IConversation } from 'interfaces/IConversation';
+import { Box, TextField, List, ListItem, ListItemText, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormLabel, Input, Select, SelectChangeEvent } from '@mui/material';
+import { IConversation, IConversationType } from 'interfaces/IConversation';
 
 interface Props {
   selectConversation: React.Dispatch<React.SetStateAction<IConversation | undefined>>
@@ -9,6 +9,13 @@ interface Props {
 const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) => {
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [newConversation, setNewConversation] = useState<IConversation>(
+    {
+      id: '',
+      name: '',
+      type: IConversationType.OneToOne,
+    }
+  );
   const [openModal, setOpenModal] = useState(false);
 
   const filteredConversations = conversations.filter((conversation) =>
@@ -23,8 +30,29 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
     setOpenModal(false);
   };
 
+  const handleIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewConversation({
+        ...newConversation,
+        id: e.target.value,
+    });
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewConversation({
+        ...newConversation,
+        name: e.target.value,
+    });
+  };
+
+  const handleTypeChange = (e: SelectChangeEvent<string>) => {
+    setNewConversation({
+        ...newConversation,
+        type: Number(e.target.value) as IConversationType,
+    });
+  };
+
   const CreateConversation = () => {
-    console.log("Criando nova conversa")
+    console.log("Criando nova conversa", newConversation);
     CloseModal();
   };
 
@@ -47,11 +75,29 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
       <Dialog open={openModal} onClose={CloseModal}>
         <DialogTitle>Informe as informações do canal</DialogTitle>
         <DialogContent>
-          {/* Add your form for creating a new conversation here */}
+          <Box component='form'>
+              <FormControl id="id">
+                  <FormLabel>Destino</FormLabel>
+                  <Input name="id" value={newConversation.id} onChange={handleIDChange} />
+              </FormControl>
+
+              <FormControl id="name">
+                  <FormLabel>Nome</FormLabel>
+                  <Input name="name" value={newConversation.name} onChange={handleNameChange} />
+              </FormControl>
+
+              <FormControl id="type">
+                  <FormLabel>Tipo</FormLabel>
+                  <Select name="type" value={newConversation.type.toString()} onChange={handleTypeChange}>
+                      <option value={IConversationType.Group.toString()}>Grupo</option>
+                      <option value={IConversationType.OneToOne.toString()}>Conversa</option>
+                  </Select>
+              </FormControl>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button color='error' onClick={CloseModal}>Cancel</Button>
-          <Button onClick={CreateConversation}>Create</Button>
+          <Button type='submit' onClick={CreateConversation}>Create</Button>
         </DialogActions>
       </Dialog>
       <List

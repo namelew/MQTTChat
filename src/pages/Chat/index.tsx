@@ -18,7 +18,7 @@ const Chat: React.FC = () => {
       alert('Informe seu usuário para começar a enviar mensagens');
       navigate('/auth');
     }
-  }, [parameters]);
+  }, [parameters, navigate]);
 
   return (
     <Grid container spacing={2}>
