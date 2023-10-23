@@ -25,5 +25,7 @@ func HandleConnections() {
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
 	)
 
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("APIPORT"), corsObj(r)))
+	logger := handlers.LoggingHandler(os.Stdout, corsObj(r))
+
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("APIPORT"), logger))
 }
