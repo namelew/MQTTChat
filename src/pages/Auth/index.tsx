@@ -13,6 +13,10 @@ const Auth = () => {
         navigate(`/chat/${ClientID}`);
     };
 
+    const handleRegister = () => {
+        navigate('/register');
+    };
+
     return (
         <Container
             sx={{
@@ -55,6 +59,9 @@ const Auth = () => {
                 />
                 <Button variant="contained" type="submit">
                     Submit
+                </Button>
+                <Button variant="contained" color="secondary" onClick={handleRegister}>
+                    Register
                 </Button>
             </Box>
         </Paper>
