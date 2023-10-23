@@ -5,15 +5,25 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/namelew/MQTTChat/src/server/internal/controllers"
 )
 
 func HandleConnections() {
-	http.Handle("/session", http.HandlerFunc(controllers.WebSocket))
-	http.Handle("/users/create", http.HandlerFunc(controllers.UsersCreate))
-	http.Handle("/conversations", http.HandlerFunc(controllers.ConversationList))
-	http.Handle("/conversations/open", http.HandlerFunc(controllers.ConversationOpen))
-	http.Handle("/conversations/close", http.HandlerFunc(controllers.ConversationClose))
+	r := mux.NewRouter()
 
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("APIPORT"), nil))
+	r.HandleFunc("/session", controllers.WebSocket).Methods("GET")
+	r.HandleFunc("/users/create", controllers.UsersCreate).Methods("POST")
+	r.HandleFunc("/conversations", controllers.ConversationList).Methods("GET")
+	r.HandleFunc("/conversations/open", controllers.ConversationOpen).Methods("POST")
+	r.HandleFunc("/conversations/close", controllers.ConversationClose).Methods("POST")
+
+	corsObj := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+	)
+
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("APIPORT"), corsObj(r)))
 }
