@@ -17,13 +17,18 @@ const Register = () => {
             name: Name,
         };
 
-        const response = await api.post('users/create', formData);
+        try {
+            const response = await api.post('users/create', formData);
 
-        if (response.status !== 200) {
-            alert('Unable to register user in the database');
-            console.log(response.statusText);
-        } else {
-            navigate(`/auth`);
+            if (response.status !== 200) {
+                alert('Unable to register user in the database');
+                console.log(response.statusText);
+            } else {
+                navigate(`/auth`);
+            }
+        } catch (error) {
+            alert('Unable to send create user request to server');
+            console.log(error);
         }
     };
 
