@@ -2,7 +2,7 @@ import { IMessageType } from 'interfaces/IMessage';
 import { useLocation } from 'react-router-dom';
 import { WebSocket } from 'ws';
 
-const socket = new WebSocket('ws://localhost:8000');
+const socket = new WebSocket(`ws://${process.env.SERVER ? process.env.SERVER : 'localhost:8000'}`);
 
 socket.on('open', () => {
     const { state } = useLocation();
