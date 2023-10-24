@@ -7,6 +7,7 @@ export enum IMessageType {
     Logout,
     Conversation,
     Success,
+    Heartbeat,
 };
 
 export interface IMessage {

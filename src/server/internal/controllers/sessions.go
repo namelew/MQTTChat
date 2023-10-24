@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -149,6 +150,29 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 			return
 		case messages.Chat:
+		case messages.Heartbeat:
+			userStatus := models.Status{
+				User:   message.Sender.Id, // deve ser o nome da key
+				Online: true,              // atributo do hash
+				LastHeartbeat: models.Heartbeat{ // atributo do hash
+					User:      message.Sender.Id,
+					Timestamp: time.Now(),
+				},
+			}
+
+			data, err := json.Marshal(&userStatus)
+
+			if err != nil {
+				log.Printf("Unable to marshall user status data. %s\n", err.Error())
+				continue
+			}
+
+			_, err = databases.DBCache.HSet(context.Background(), "userStatusHash", message.Sender.Id, data).Result()
+
+			if err != nil {
+				log.Printf("Unable to write user status data in database cache. %s\n", err.Error())
+				continue
+			}
 		default:
 			conn.WriteJSON(&messages.Message{
 				Id:        message.Id,
