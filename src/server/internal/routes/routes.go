@@ -14,6 +14,7 @@ func HandleConnections() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/session", controllers.WebSocket).Methods("GET")
+	r.HandleFunc("/users/{id}", controllers.UsersGet).Methods("GET")
 	r.HandleFunc("/users/create", controllers.UsersCreate).Methods("POST")
 	r.HandleFunc("/conversations", controllers.ConversationList).Methods("GET")
 	r.HandleFunc("/conversations/open", controllers.ConversationOpen).Methods("POST")
