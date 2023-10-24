@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, TextField, Container, Box, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { api } from 'network/rest';
 import { IUser } from 'interfaces/IUser';
+import { SocketAdrr } from 'network/socket';
 
-const Auth = () => {
+interface Props {
+    context: React.Context<{ socket: WebSocket | undefined; setSocket: React.Dispatch<React.SetStateAction<WebSocket | undefined>>;}>,
+}
+
+const Auth = ( { context } : Props ) => {
     const [ClientID, setClientID] = useState('');
+    const { setSocket } = useContext(context);
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -18,10 +24,11 @@ const Auth = () => {
                 alert('Unable to validate user credentials');
                 console.log(response.status, response.statusText);
             } else {
+                setSocket(new WebSocket(SocketAdrr));
                 navigate(`/chat`, { state: { user: response.data } });
             }
         } catch (error) {
-            alert('Failed on request validation to server');
+            alert('Failed on validation request to server');
             console.log(error);
         }
     };

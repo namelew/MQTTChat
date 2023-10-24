@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Grid, Paper } from '@mui/material';
 import Conversation from './Conversation';
 import ConversationsList from './List';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
 import { IConversation } from 'interfaces/IConversation';
 import { ISession } from 'interfaces/ISession';
 
-const Chat: React.FC = () => {
+interface Props {
+  context: React.Context<{ socket: WebSocket | undefined; setSocket: React.Dispatch<React.SetStateAction<WebSocket | undefined>>;}>,
+}
+
+const Chat: React.FC<Props> = ( { context } : Props) => {
   const navigate = useNavigate();
   const [session, setSession] = useState<ISession>();
+  const { socket } = useContext(context);
   const [currentConversation, setCurrentConversation] = useState<IConversation>();
   const { state } = useLocation();
 
@@ -25,7 +30,7 @@ const Chat: React.FC = () => {
     <Grid container spacing={2}>
       <Grid item xs={6}>
         <Paper elevation={3}>
-          <ConversationsList selectConversation={setCurrentConversation}/>
+          <ConversationsList selectConversation={setCurrentConversation} socket={socket}/>
         </Paper>
       </Grid>
       <Grid item xs={6}>

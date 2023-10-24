@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -40,10 +42,32 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, status int, reason err
 	}
 }
 
+func OriginChecker(r *http.Request) bool {
+	origin := r.Header["Origin"]
+	if len(origin) == 0 {
+		return true
+	}
+
+	u, err := url.Parse(origin[0])
+	if err != nil {
+		return false
+	}
+
+	allowedOrigins := []string{"*"}
+	for _, ao := range allowedOrigins {
+		if ao == "*" || strings.HasSuffix(u.Host, ao) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func WebSocket(w http.ResponseWriter, r *http.Request) {
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  2048,
 		WriteBufferSize: 1024,
+		CheckOrigin:     OriginChecker,
 		Error:           ErrorHandler,
 	}
 

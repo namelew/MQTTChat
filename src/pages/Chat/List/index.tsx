@@ -6,10 +6,11 @@ import { IConversation } from 'interfaces/IConversation';
 import CreateModal from './CreateModal';
 
 interface Props {
+  socket?: WebSocket,
   selectConversation: React.Dispatch<React.SetStateAction<IConversation | undefined>>
 }
 
-const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) => {
+const ConversationsList: React.FC<Props> = ( { selectConversation, socket } : Props ) => {
   const navigate = useNavigate();
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +21,7 @@ const ConversationsList: React.FC<Props> = ( { selectConversation } : Props ) =>
   );
 
   const handleClose = () => {
+    socket?.close();
     navigate('/auth');
   };
 
