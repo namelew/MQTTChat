@@ -11,7 +11,6 @@ const AppRouter = () => {
                 <Route path='auth' element={<Auth />}/>
                 <Route path='register' element={<Register />}/>
                 <Route path='chat' element={<Chat />}/>
-                <Route path='chat/:id' element={<Chat />}/>
             </Routes>
         </Router>
     );

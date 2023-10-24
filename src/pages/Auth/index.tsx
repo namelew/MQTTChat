@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { Button, TextField, Container, Box, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { api } from 'network/rest';
+import { IUser } from 'interfaces/IUser';
 
 const Auth = () => {
     const [ClientID, setClientID] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        console.log(`Client ID: ${ClientID}`);
-        navigate(`/chat/${ClientID}`);
+        try {
+            const response = await api.get<IUser>(`users/${ClientID}`)
+
+            if (response.status !== 200) {
+                alert('Unable to validate user credentials');
+                console.log(response.status, response.statusText);
+            } else {
+                navigate(`/chat`, { state: { user: response.data } });
+            }
+        } catch (error) {
+            alert('Failed on request validation to server');
+            console.log(error);
+        }
     };
 
     const handleRegister = () => {
