@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, TextField, List, ListItem, ListItemText, AppBar, Toolbar, IconButton, Stack } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { IConversation } from 'interfaces/IConversation';
 import CreateModal from './CreateModal';
+import { IMessageType } from 'interfaces/IMessage';
 
 interface Props {
   socket?: WebSocket,
@@ -15,13 +16,27 @@ const ConversationsList: React.FC<Props> = ( { selectConversation, socket } : Pr
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [openModal, setOpenModal] = useState(false);
+  const { state } = useLocation();
 
   const filteredConversations = conversations.filter((conversation) =>
     conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleClose = () => {
-    socket?.close();
+    socket?.send(JSON.stringify({
+      id: Date.now(),
+      type: IMessageType.Logout,
+      sender: state.user,
+      chat: {
+          id: "",
+          name: "",
+          type: 0,
+          participants: null,
+          messages: null,
+      },
+      timestamp: new Date().toISOString(),
+      payload:""
+    }));
     navigate('/auth');
   };
 

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from 'network/rest';
 import { IUser } from 'interfaces/IUser';
 import { SocketAdrr } from 'network/socket';
+import { IMessageType } from 'interfaces/IMessage';
 
 interface Props {
     context: React.Context<{ socket: WebSocket | undefined; setSocket: React.Dispatch<React.SetStateAction<WebSocket | undefined>>;}>,
@@ -24,7 +25,30 @@ const Auth = ( { context } : Props ) => {
                 alert('Unable to validate user credentials');
                 console.log(response.status, response.statusText);
             } else {
-                setSocket(new WebSocket(SocketAdrr));
+                const socket = new WebSocket(SocketAdrr);
+
+                socket.onopen = () => {
+                    socket.send(JSON.stringify({
+                        id: Date.now(),
+                        type: IMessageType.Login,
+                        sender: response.data,
+                        chat: {
+                            id: "",
+                            name: "",
+                            type: 0,
+                            participants: null,
+                            messages: null,
+                        },
+                        timestamp: new Date().toISOString(),
+                        payload:""
+                    }));
+                };
+
+                socket.onmessage = (msg) => {
+                    console.log(msg);
+                }
+
+                setSocket(socket);
                 navigate(`/chat`, { state: { user: response.data } });
             }
         } catch (error) {

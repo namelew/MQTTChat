@@ -92,7 +92,7 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			log.Println("Unable to receive message from client. ", err.Error())
-			continue
+			return
 		}
 
 		switch message.Type {

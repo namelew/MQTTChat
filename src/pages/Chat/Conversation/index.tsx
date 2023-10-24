@@ -6,9 +6,10 @@ import { IConversation} from 'interfaces/IConversation';
 interface Props {
   clientID: string
   current?: IConversation
+  socket?:WebSocket
 }
 
-const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
+const Conversation: React.FC<Props> = ({ clientID, current, socket } : Props) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -31,7 +32,7 @@ const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
             },
               chat: current,
               payload: newMessage, 
-              timestamp: time, 
+              timestamp: time.toString(), 
           }]);
         setNewMessage('');
     }
@@ -69,7 +70,7 @@ const Conversation: React.FC<Props> = ({ clientID, current } : Props) => {
                 color: 'white',
               }}
             >
-              <ListItemText primary={message.payload} secondary={`${message.sender.name}, ${message.timestamp.toLocaleDateString()}`} />
+              <ListItemText primary={message.payload} secondary={`${message.sender.name}, ${message.timestamp}`} />
             </Paper>
           </ListItem>
         ))}

@@ -3,9 +3,10 @@ import { IUser } from "./IUser";
 
 export enum IMessageType {
     Error,
-    Request,
-    Response,
+    Login,
+    Logout,
     Conversation,
+    Success,
 };
 
 export interface IMessage {
@@ -13,6 +14,6 @@ export interface IMessage {
     type: IMessageType,
     sender: IUser,
     chat: IConversation,
-    timestamp: Date,
+    timestamp: string, // no formato ISO
     payload: string,
 };

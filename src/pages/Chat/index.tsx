@@ -35,7 +35,7 @@ const Chat: React.FC<Props> = ( { context } : Props) => {
       </Grid>
       <Grid item xs={6}>
         <Paper elevation={3}>
-          <Conversation clientID={session ? session.user.id : ''} current={currentConversation}/>
+          <Conversation clientID={session ? session.user.id : ''} current={currentConversation} socket={socket}/>
         </Paper>
       </Grid>
     </Grid>
