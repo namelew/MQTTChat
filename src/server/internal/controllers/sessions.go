@@ -10,7 +10,10 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/namelew/MQTTChat/src/server/internal/models"
+	"github.com/namelew/MQTTChat/src/server/packages/databases"
 	"github.com/namelew/MQTTChat/src/server/packages/messages"
+	"gorm.io/gorm"
 )
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request, status int, reason error) {
@@ -80,6 +83,8 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 	defer conn.Close()
 
+	sessionUser := models.User{}
+
 	for {
 		message := messages.Message{}
 
@@ -90,8 +95,67 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		log.Println(message)
+		switch message.Type {
+		case messages.Login:
+			trans := databases.MainDatabase.First(&sessionUser, models.User{ID: message.Sender.Id})
 
-		conn.WriteJSON(&message)
+			if trans.Error == gorm.ErrRecordNotFound {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unable to find informed user",
+				})
+				return
+			}
+
+			if trans.Error != nil {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unexpected error on registry query",
+				})
+				return
+			}
+
+			conn.WriteJSON(&messages.Message{
+				Id:        message.Id,
+				Type:      messages.Success,
+				Timestamp: time.Now(),
+			})
+
+			// create MQTT Client to communicate
+		case messages.Logout:
+			sessionUser.LastConnection = time.Now()
+
+			trans := databases.MainDatabase.Save(&sessionUser)
+
+			if trans.Error != nil {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unexpected error on user last connection update",
+				})
+				return
+			}
+
+			conn.WriteJSON(&messages.Message{
+				Id:        message.Id,
+				Type:      messages.Success,
+				Timestamp: time.Now(),
+			})
+
+			return
+		case messages.Chat:
+		default:
+			conn.WriteJSON(&messages.Message{
+				Id:        message.Id,
+				Type:      messages.Error,
+				Timestamp: time.Now(),
+				Payload:   "Unexpected client message",
+			})
+		}
 	}
 }

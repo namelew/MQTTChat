@@ -11,10 +11,11 @@ const (
 )
 
 const (
-	Error    MessageType = 0
-	Request  MessageType = 1
-	Response MessageType = 2
-	Chat     MessageType = 3
+	Error   MessageType = 0
+	Login   MessageType = 1
+	Logout  MessageType = 2
+	Chat    MessageType = 3
+	Success MessageType = 4
 )
 
 type User struct {
