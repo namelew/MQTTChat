@@ -166,6 +166,16 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 			// create MQTT Client to communicate
 		case messages.Logout:
+			if sessionUser.ID == "" {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unloged user, please inform your crendetials to continue",
+				})
+				continue
+			}
+
 			sessionUser.LastConnection = time.Now()
 
 			trans := databases.MainDatabase.Save(&sessionUser)
@@ -188,7 +198,26 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 			return
 		case messages.Chat:
+			if sessionUser.ID == "" {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unloged user, please inform your crendetials to continue",
+				})
+				continue
+			}
 		case messages.Heartbeat:
+			if sessionUser.ID == "" {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unloged user, please inform your crendetials to continue",
+				})
+				continue
+			}
+
 			userStatus := models.Status{
 				User:   message.Sender.Id,
 				Online: true,
