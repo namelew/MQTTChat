@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/namelew/MQTTChat/src/server/internal/messaging"
 	"github.com/namelew/MQTTChat/src/server/internal/models"
 	"github.com/namelew/MQTTChat/src/server/packages/databases"
 	"github.com/namelew/MQTTChat/src/server/packages/messages"
@@ -82,7 +83,8 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionUser := models.User{}
+	var sessionUser models.User
+	var messagingClient *messaging.Client
 
 	defer func() {
 		var userStatus models.Status
@@ -91,6 +93,7 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			conn.Close()
+			messagingClient.Free()
 			log.Printf("Unable to read user status data from database cache. %s\n", err.Error())
 			return
 		}
@@ -109,6 +112,7 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			conn.Close()
+			messagingClient.Free()
 			log.Printf("Unable to marshall user status data where update status. %s\n", err.Error())
 			return
 		}
@@ -117,11 +121,13 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			conn.Close()
+			messagingClient.Free()
 			log.Printf("Unable to write user status data in database cache. %s\n", err.Error())
 			return
 		}
 
 		conn.Close()
+		messagingClient.Free()
 	}()
 
 	for {
@@ -164,7 +170,17 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 				Timestamp: time.Now(),
 			})
 
-			// create MQTT Client to communicate
+			messagingClient = messaging.New(sessionUser)
+
+			if messagingClient == nil {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unable to open messaging channel",
+				})
+				return
+			}
 		case messages.Logout:
 			if sessionUser.ID == "" {
 				conn.WriteJSON(&messages.Message{
