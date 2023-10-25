@@ -82,9 +82,47 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defer conn.Close()
-
 	sessionUser := models.User{}
+
+	defer func() {
+		var userStatus models.Status
+
+		dataString, err := databases.DBCache.HGet(context.Background(), "userStatusHash", sessionUser.ID).Result()
+
+		if err != nil {
+			conn.Close()
+			log.Printf("Unable to read user status data from database cache. %s\n", err.Error())
+			return
+		}
+
+		err = json.Unmarshal([]byte(dataString), &userStatus)
+
+		if err != nil {
+			conn.Close()
+			log.Printf("Unable to unmarshall user status data from database cache. %s\n", err.Error())
+			return
+		}
+
+		userStatus.Online = false
+
+		data, err := json.Marshal(&userStatus)
+
+		if err != nil {
+			conn.Close()
+			log.Printf("Unable to marshall user status data where update status. %s\n", err.Error())
+			return
+		}
+
+		_, err = databases.DBCache.HSet(context.Background(), "userStatusHash", sessionUser.ID, data).Result()
+
+		if err != nil {
+			conn.Close()
+			log.Printf("Unable to write user status data in database cache. %s\n", err.Error())
+			return
+		}
+
+		conn.Close()
+	}()
 
 	for {
 		message := messages.Message{}
@@ -152,9 +190,9 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 		case messages.Chat:
 		case messages.Heartbeat:
 			userStatus := models.Status{
-				User:   message.Sender.Id, // deve ser o nome da key
-				Online: true,              // atributo do hash
-				LastHeartbeat: models.Heartbeat{ // atributo do hash
+				User:   message.Sender.Id,
+				Online: true,
+				LastHeartbeat: models.Heartbeat{
 					User:      message.Sender.Id,
 					Timestamp: time.Now(),
 				},
