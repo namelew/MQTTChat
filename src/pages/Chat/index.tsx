@@ -20,6 +20,10 @@ const Chat: React.FC<Props> = ( { context } : Props) => {
   const { state } = useLocation();
 
   const heartbeat = () => {
+    if (socket?.readyState === WebSocket.CLOSED) {
+      alert('Server connection lost');
+      navigate('/auth');
+    }
     socket?.send(JSON.stringify({
         id: Date.now(),
         type: IMessageType.Heartbeat,

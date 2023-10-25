@@ -46,7 +46,7 @@ const Auth = ( { context } : Props ) => {
 
                 socket.onmessage = (msg) => {
                     console.log(msg);
-                }
+                };
 
                 setSocket(socket);
                 navigate(`/chat`, { state: { user: response.data } });
