@@ -1,14 +1,12 @@
 package messages
 
-import "time"
+import (
+	"time"
 
-type ConversationType uint8
-type MessageType uint8
-
-const (
-	OneToOne ConversationType = 0
-	Group    ConversationType = 1
+	"github.com/namelew/MQTTChat/src/server/internal/models"
 )
+
+type MessageType uint8
 
 const (
 	Error     MessageType = 0
@@ -25,11 +23,11 @@ type User struct {
 }
 
 type Conversation struct {
-	Id           string           `json:"id"`
-	Name         string           `json:"name"`
-	Type         ConversationType `json:"type"`
-	Participants []User           `json:"participants"`
-	Messages     []Message        `json:"messages"`
+	Id           string                  `json:"id"`
+	Name         string                  `json:"name"`
+	Type         models.ConversationType `json:"type"`
+	Participants []User                  `json:"participants"`
+	Messages     []Message               `json:"messages"`
 }
 
 type Message struct {

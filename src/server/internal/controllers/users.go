@@ -15,8 +15,6 @@ func UsersCreate(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&request)
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	if err != nil {
 		http.Error(w, "Unexpected user data format", http.StatusBadRequest)
 		return
