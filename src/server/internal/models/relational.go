@@ -21,8 +21,8 @@ type Conversation struct {
 	ToID      string
 	Type      ConversationType
 	CriptoKey string
-	From      User
-	To        User
+	From      User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	To        User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type Message struct {
@@ -32,12 +32,12 @@ type Message struct {
 	Text           string
 	Attachment     string
 	Time           time.Time `gorm:"index"`
-	Conversation
+	Conversation   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UnreadMessage struct {
 	MessageID uint64    `gorm:"primary_key"`
 	To        string    `gorm:"primary_key"`
 	Time      time.Time `gorm:"primary_key"`
-	Message
+	Message   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
