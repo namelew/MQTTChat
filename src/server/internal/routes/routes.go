@@ -18,7 +18,7 @@ func HandleConnections() {
 	r.HandleFunc("/users/create", controllers.UsersCreate).Methods("POST")
 	r.HandleFunc("/conversations", controllers.ConversationList).Methods("GET")
 	r.HandleFunc("/conversations/open", controllers.ConversationOpen).Methods("POST")
-	r.HandleFunc("/conversations/close", controllers.ConversationClose).Methods("POST")
+	r.HandleFunc("/conversations/close/{id}", controllers.ConversationClose).Methods("DELETE")
 
 	corsObj := handlers.CORS(
 		handlers.AllowedOrigins([]string{"*"}),

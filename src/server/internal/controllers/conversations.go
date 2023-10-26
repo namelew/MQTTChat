@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/namelew/MQTTChat/src/server/internal/models"
 	"github.com/namelew/MQTTChat/src/server/packages/databases"
 	"github.com/namelew/MQTTChat/src/server/packages/messages"
@@ -67,5 +69,31 @@ func ConversationList(w http.ResponseWriter, r *http.Request) {
 }
 
 func ConversationClose(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
 
+	if len(vars) != 1 {
+		http.Error(w, "Unexpected number of params in the URL", http.StatusBadRequest)
+		return
+	}
+
+	id, exist := vars["id"]
+
+	if !exist {
+		http.Error(w, "Don't find the expected url params", http.StatusBadRequest)
+		return
+	}
+
+	validID, err := strconv.ParseUint(id, 10, 64)
+
+	if err != nil {
+		http.Error(w, "Unexpected number format to ID param", http.StatusBadRequest)
+		return
+	}
+
+	trans := databases.MainDatabase.Delete(&models.Conversation{}, models.Conversation{ID: validID})
+
+	if trans.Error != nil {
+		http.Error(w, "Unable to close conversation", http.StatusInternalServerError)
+		return
+	}
 }
