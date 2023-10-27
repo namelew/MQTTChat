@@ -15,6 +15,7 @@ const (
 	Chat      MessageType = 3
 	Success   MessageType = 4
 	Heartbeat MessageType = 5
+	ChatSync  MessageType = 6
 )
 
 type User struct {

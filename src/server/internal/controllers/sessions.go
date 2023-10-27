@@ -85,6 +85,7 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 
 	var sessionUser models.User
 	var messagingClient *messaging.Client
+	var conversations []models.Conversation
 
 	defer func() {
 		var userStatus models.Status
@@ -163,6 +164,20 @@ func WebSocket(w http.ResponseWriter, r *http.Request) {
 				})
 				return
 			}
+
+			trans = databases.MainDatabase.Where("from_id = ? OR to_id = ?", sessionUser.ID, sessionUser.ID).Find(&conversations)
+
+			if trans.Error != nil && trans.Error != gorm.ErrRecordNotFound {
+				conn.WriteJSON(&messages.Message{
+					Id:        message.Id,
+					Type:      messages.Error,
+					Timestamp: time.Now(),
+					Payload:   "Unexpected error on conversation syncronization",
+				})
+				return
+			}
+
+			log.Println(conversations)
 
 			conn.WriteJSON(&messages.Message{
 				Id:        message.Id,
