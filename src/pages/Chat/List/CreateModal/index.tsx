@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormLabel, Input, Select, SelectChangeEvent, MenuItem, Stack } from '@mui/material';
 import { IConversation, IConversationType } from 'interfaces/IConversation';
+import { api } from 'network/rest';
+import { AxiosError } from 'axios';
 
 interface Props {
     open: boolean,
@@ -48,8 +50,20 @@ const CreateModal = ({ open, setOpen } : Props) => {
         });
     };
 
-    const CreateConversation = () => {
+    const CreateConversation = async () => {
         console.log("Criando nova conversa", newConversation);
+
+        try {
+            const response = await api.post("/conversations/open", newConversation);
+
+            if (response.status !== 200) {
+                alert("Unable to create conversation");
+            }
+        } catch (error) {
+            alert("Error on chat creation");
+            console.log(error);
+        }
+
         CloseModal();
     };
 
